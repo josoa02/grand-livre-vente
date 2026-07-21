@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grand Livre — Gestion des comptes clients, enfin simple</title>
+<meta name="description" content="Grand Livre centralise vos clients, vos factures et vos relances dans un seul outil simple, en français.">
+<link rel="canonical" href="https://josoa02.github.io/grand-livre-vente/">
+
+<!-- Icône affichée dans l'onglet du navigateur -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23142A26'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='30' font-weight='700' fill='%23F6F8F1' text-anchor='middle'%3EGL%3C/text%3E%3C/svg%3E">
+
+<!-- Aperçu affiché quand la page est partagée sur Facebook, WhatsApp, LinkedIn -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="https://josoa02.github.io/grand-livre-vente/">
+<meta property="og:title" content="Grand Livre — Gestion des comptes clients, enfin simple">
+<meta property="og:description" content="Clients, factures, paiements et relances automatiques — un seul outil simple, en français.">
+<meta property="og:image" content="https://josoa02.github.io/grand-livre-vente/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Aperçu affiché quand la page est partagée sur X/Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Grand Livre — Gestion des comptes clients, enfin simple">
+<meta name="twitter:description" content="Clients, factures, paiements et relances automatiques — un seul outil simple, en français.">
+<meta name="twitter:image" content="https://josoa02.github.io/grand-livre-vente/og-image.jpg">
+
+<!--
+  ============================================================
+  À MODIFIER AVANT DE PUBLIER CETTE PAGE :
+  - Le numéro WhatsApp (+261 33 156 09 50) est déjà en place.
+  - Cherche "450 000 Ar" (prix) — remplace par le prix que tu veux afficher,
+    si tu ne gardes pas celui-ci.
+  ============================================================
+-->
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  :root{
+    --paper:#EAF0E2; --paper-deep:#DFE7D5; --card:#F5F8EF;
+    --ink:#1E2A20; --ink-soft:#4C5A4C;
+    --teal:#1F3F3A; --teal-deep:#142A26; --teal-tint:#DCE9E4;
+    --red:#8B3226; --red-tint:#F2E1DC;
+    --green:#2F5D34; --green-tint:#E1EBDD;
+    --amber:#9C6A19; --amber-tint:#F1E6D2;
+    --border:#C4D0B6;
+    --serif:'Fraunces',Georgia,serif;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    --mono:'IBM Plex Mono','Courier New',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-size:16px; line-height:1.55;
+    background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,var(--paper-deep) 27px,var(--paper-deep) 28px);
+  }
+  a{color:inherit;}
+  img,svg{display:block;}
+  .conteneur{max-width:1120px;margin:0 auto;padding:0 24px;}
+  h1,h2,h3{font-family:var(--serif);color:var(--teal-deep);margin:0 0 .4em;letter-spacing:-0.01em;}
+  h1{font-size:clamp(2.1rem,4.2vw,3.4rem);font-weight:700;line-height:1.08;}
+  h2{font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:600;}
+  h3{font-size:1.05rem;font-weight:600;}
+  p{margin:0 0 1em;}
+  .oeil{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--teal);margin-bottom:14px;
+  }
+  .oeil::before{content:"";width:22px;height:1.5px;background:var(--teal);display:inline-block;}
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+
+  /* ---------- Bouton ---------- */
+  .bouton{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--sans);font-weight:700;font-size:.95rem;
+    padding:14px 26px;border-radius:3px;border:1.5px solid transparent;
+    cursor:pointer;text-decoration:none;line-height:1;
+  }
+  .bouton-primaire{background:var(--teal);color:#fff;}
+  .bouton-primaire:hover{background:var(--teal-deep);}
+  .bouton-clair{background:#fff;color:var(--teal-deep);border-color:var(--teal-deep);}
+  .bouton-clair:hover{background:var(--teal-tint);}
+  .bouton-fantome{background:transparent;color:#EAF0E2;border-color:#3A5850;}
+  .bouton-fantome:hover{background:#1C332E;}
+
+  /* ---------- Nav ---------- */
+  .entete{position:sticky;top:0;z-index:50;background:var(--teal-deep);border-bottom:3px solid var(--teal);}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;}
+  .marque{font-family:var(--serif);font-weight:700;font-size:1.3rem;color:#F6F8F1;display:flex;align-items:baseline;gap:9px;}
+  .marque span{font-family:var(--sans);font-size:.62rem;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:#8FAC9E;}
+  .nav-liens{display:flex;gap:26px;align-items:center;}
+  .nav-liens a{color:#CFE0D6;font-size:.88rem;font-weight:500;text-decoration:none;}
+  .nav-liens a:hover{color:#fff;}
+  .nav-cta{display:none;}
+  @media(min-width:760px){.nav-cta{display:inline-flex;}}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:76px 0 84px;}
+  .hero-grille{display:grid;grid-template-columns:1fr;gap:52px;align-items:center;}
+  @media(min-width:920px){.hero-grille{grid-template-columns:1.05fr .95fr;}}
+  .hero-texte p.lead{font-size:1.14rem;color:var(--ink-soft);max-width:46ch;}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px;}
+  .hero-preuve{display:flex;gap:22px;margin-top:34px;flex-wrap:wrap;}
+  .hero-preuve div{font-size:.82rem;color:var(--ink-soft);}
+  .hero-preuve b{display:block;font-family:var(--mono);font-size:1.3rem;color:var(--teal-deep);}
+
+  /* ---------- Tampon (signature élément, repris de l'appli) ---------- */
+  .tampon{
+    position:absolute; font-family:var(--serif); font-weight:800; font-size:.82rem;
+    text-transform:uppercase; letter-spacing:.05em; padding:7px 16px 8px;
+    border:2.5px solid var(--red); color:var(--red); border-radius:5px;
+    transform:rotate(-7deg); background:rgba(242,225,220,.55);
+  }
+
+  /* ---------- Maquette du tableau de bord (mockup CSS, pas une capture) ---------- */
+  .maquette-hero{position:relative;}
+  .maquette{
+    background:var(--card); border:1px solid var(--border); border-radius:6px;
+    box-shadow:0 6px 24px rgba(20,42,38,.14), 0 1px 3px rgba(20,42,38,.08);
+    overflow:hidden;
+  }
+  .maquette-barre{background:var(--teal-deep);padding:11px 16px;display:flex;gap:6px;align-items:center;}
+  .maquette-barre span{width:9px;height:9px;border-radius:50%;background:#3A5850;display:block;}
+  .maquette-corps{padding:20px;}
+  .maquette-titre{font-family:var(--serif);font-weight:700;color:var(--teal-deep);font-size:1.05rem;margin-bottom:14px;}
+  .maquette-kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+  .maquette-kpi{background:#fff;border:1px solid var(--border);border-radius:4px;padding:10px 12px;}
+  .maquette-kpi .lab{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);}
+  .maquette-kpi .val{font-family:var(--mono);font-weight:600;font-size:1.05rem;color:var(--teal-deep);}
+  .maquette-kpi.rouge .val{color:var(--red);}
+  .maquette-ligne{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--paper-deep);font-size:.82rem;}
+  .maquette-ligne:last-child{border-bottom:none;}
+  .badge{font-family:var(--serif);font-weight:700;font-size:.62rem;text-transform:uppercase;padding:2px 8px;border-radius:3px;border:1.5px solid currentColor;transform:rotate(-2deg);display:inline-block;}
+  .badge.retard{color:var(--red);background:var(--red-tint);}
+  .badge.partielle{color:var(--amber);background:var(--amber-tint);}
+
+  /* ---------- Sections génériques ---------- */
+  section{padding:72px 0;}
+  .section-tete{max-width:640px;margin-bottom:44px;}
+  .section-tete p{color:var(--ink-soft);font-size:1.05rem;}
+
+  /* ---------- Problème ---------- */
+  .grille-3{display:grid;grid-template-columns:1fr;gap:18px;}
+  @media(min-width:760px){.grille-3{grid-template-columns:repeat(3,1fr);}}
+  .carte-probleme{
+    background:var(--card);border:1px solid var(--border);border-radius:5px;padding:26px 24px;
+    border-top:3px solid var(--red);
+  }
+  .carte-probleme p{color:var(--ink-soft);margin:0;font-size:.95rem;}
+
+  /* ---------- Fonctionnalités ---------- */
+  .fonctionnalites{background:var(--paper-deep);}
+  .grille-fonctions{display:grid;grid-template-columns:1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+  @media(min-width:640px){.grille-fonctions{grid-template-columns:repeat(2,1fr);}}
+  @media(min-width:960px){.grille-fonctions{grid-template-columns:repeat(3,1fr);}}
+  .carte-fonction{background:var(--card);padding:26px 24px;}
+  .carte-fonction .icone{width:34px;height:34px;color:var(--teal);margin-bottom:14px;}
+  .carte-fonction h3{margin-bottom:6px;}
+  .carte-fonction p{color:var(--ink-soft);font-size:.9rem;margin:0;}
+  .carte-fonction.neuf{position:relative;}
+  .puce-neuf{
+    position:absolute;top:22px;right:22px;background:var(--teal);color:#fff;
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;
+    padding:2px 8px;border-radius:10px;
+  }
+
+  /* ---------- Tarif ---------- */
+  .tarif{background:var(--teal-deep);color:#EAF0E2;position:relative;overflow:hidden;}
+  .tarif .oeil{color:#9FB8AC;}
+  .tarif .oeil::before{background:#9FB8AC;}
+  .tarif h2{color:#fff;}
+  .tarif-grille{display:grid;grid-template-columns:1fr;gap:30px;align-items:start;}
+  @media(min-width:880px){.tarif-grille{grid-template-columns:1fr 1.15fr;}}
+  .carte-prix{
+    background:#F5F8EF;color:var(--ink);border-radius:8px;padding:34px 30px;
+    box-shadow:0 12px 34px rgba(0,0,0,.28); position:relative;
+  }
+  .carte-prix .etiquette{
+    display:inline-block;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--amber);background:var(--amber-tint);padding:4px 10px;border-radius:3px;margin-bottom:16px;
+  }
+  .carte-prix .prix{font-family:var(--mono);font-weight:700;font-size:2.6rem;color:var(--teal-deep);margin-bottom:2px;}
+  .carte-prix .prix span{font-size:1rem;font-weight:500;color:var(--ink-soft);}
+  .carte-prix .sous{color:var(--ink-soft);font-size:.86rem;margin-bottom:22px;}
+  .liste-inclus{list-style:none;margin:0 0 26px;padding:0;}
+  .liste-inclus li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:.92rem;}
+  .liste-inclus li:last-child{border-bottom:none;}
+  .liste-inclus svg{width:17px;height:17px;flex-shrink:0;color:var(--green);margin-top:2px;}
+  .tarif-notes h3{color:#fff;}
+  .tarif-notes p{color:#B9CCC1;}
+  .tarif-notes ul{padding-left:20px;color:#B9CCC1;margin:0 0 20px;}
+  .tarif-notes li{margin-bottom:8px;}
+
+  /* ---------- FAQ ---------- */
+  .faq{max-width:760px;}
+  details{border-bottom:1px solid var(--border);padding:18px 0;}
+  summary{font-family:var(--serif);font-weight:600;font-size:1.02rem;color:var(--teal-deep);cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;}
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:"+";font-family:var(--mono);font-size:1.2rem;color:var(--teal);flex-shrink:0;}
+  details[open] summary::after{content:"–";}
+  details p{color:var(--ink-soft);margin:12px 0 0;font-size:.94rem;}
+
+  /* ---------- CTA finale ---------- */
+  .cta-finale{
+    background:var(--card);border:1px solid var(--border);border-radius:8px;
+    padding:48px 40px;text-align:center;margin:0 24px 72px;max-width:1072px;margin-left:auto;margin-right:auto;
+    position:relative;
+  }
+  .cta-finale h2{margin-bottom:10px;}
+  .cta-finale p{color:var(--ink-soft);max-width:52ch;margin:0 auto 26px;}
+
+  /* ---------- Pied ---------- */
+  footer{background:var(--teal-deep);color:#9FB8AC;padding:34px 0;}
+  footer .conteneur{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;font-size:.82rem;}
+  footer strong{color:#EAF0E2;}
+
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+</style>
+</head>
+<body>
+
+<header class="entete">
+  <div class="conteneur nav">
+    <div class="marque">Grand Livre <span>Comptes clients</span></div>
+    <nav class="nav-liens">
+      <a href="#probleme">Le problème</a>
+      <a href="#fonctionnalites">Fonctionnalités</a>
+      <a href="#tarif">Tarif</a>
+      <a href="#faq">Questions</a>
+    </nav>
+    <a class="bouton bouton-fantome nav-cta" href="https://wa.me/261331560950" target="_blank" rel="noopener">Écrire sur WhatsApp</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="conteneur hero-grille">
+    <div class="hero-texte">
+      <div class="oeil">Gestion des comptes clients</div>
+      <h1>Sachez enfin qui vous doit combien — sans ouvrir un seul tableur.</h1>
+      <p class="lead">Grand Livre centralise vos clients, vos factures et vos relances dans un seul outil simple, en français, prêt à l'emploi dès aujourd'hui.</p>
+      <div class="hero-cta">
+        <a class="bouton bouton-primaire" href="https://wa.me/261331560950" target="_blank" rel="noopener">
+          Demander une démo sur WhatsApp
+        </a>
+        <a class="bouton bouton-clair" href="#fonctionnalites">Voir les fonctionnalités</a>
+      </div>
+      <div class="hero-preuve">
+        <div><b>9</b>modules inclus</div>
+        <div><b>100%</b>en français</div>
+        <div><b>0</b>tableur Excel à jongler</div>
+      </div>
+    </div>
+
+    <div class="maquette-hero">
+      <div class="tampon" style="top:-14px;right:8px;">Prêt à l'emploi</div>
+      <div class="maquette">
+        <div class="maquette-barre"><span></span><span></span><span></span></div>
+        <div class="maquette-corps">
+          <div class="maquette-titre">Tableau de bord</div>
+          <div class="maquette-kpis">
+            <div class="maquette-kpi"><div class="lab">Total à recevoir</div><div class="val">8 165,50 $</div></div>
+            <div class="maquette-kpi rouge"><div class="lab">En souffrance</div><div class="val">5 650,00 $</div></div>
+          </div>
+          <div class="maquette-ligne"><span>N° FA-2026-009 — Fromagerie Lac-Vert</span><span class="badge retard">45 j retard</span></div>
+          <div class="maquette-ligne"><span>N° FA-2026-014 — Atelier Boréal</span><span class="badge retard">30 j retard</span></div>
+          <div class="maquette-ligne"><span>N° FA-2026-021 — Studio Graphite</span><span class="badge partielle">Partielle</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="probleme">
+  <div class="conteneur">
+    <div class="section-tete">
+      <div class="oeil">Le problème</div>
+      <h2>Vous reconnaissez ça ?</h2>
+      <p>La plupart des petites entreprises suivent encore leurs comptes clients à la main — jusqu'à ce que ça devienne ingérable.</p>
+    </div>
+    <div class="grille-3">
+      <div class="carte-probleme">
+        <h3>Le fichier Excel ne dit plus la vérité</h3>
+        <p>Une feuille de calcul modifiée par plusieurs personnes, des formules cassées, des montants qui ne concordent plus avec la réalité.</p>
+      </div>
+      <div class="carte-probleme">
+        <h3>Les relances s'oublient</h3>
+        <p>Sans liste claire des retards, une facture impayée passe inaperçue — jusqu'à ce qu'il soit trop tard pour la récupérer facilement.</p>
+      </div>
+      <div class="carte-probleme">
+        <h3>Aucune vue d'ensemble</h3>
+        <p>Impossible de répondre en 5 secondes à « combien nous doit-on, au total, en ce moment ? »</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fonctionnalites" class="fonctionnalites">
+  <div class="conteneur">
+    <div class="section-tete">
+      <div class="oeil">Ce que fait Grand Livre</div>
+      <h2>Neuf modules, un seul outil</h2>
+      <p>Tout ce qu'il faut pour suivre vos comptes clients du premier jour à l'encaissement — rien de superflu.</p>
+    </div>
+    <div class="grille-fonctions">
+
+      <div class="carte-fonction">
+        <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 8.2c1.4.3 2.4 1.5 2.4 3s-1 2.7-2.4 3"/><path d="M21 20c0-2.6-1.7-4.8-4-5.6"/></svg>
+        <h3>Fiches clients</h3>
+        <p>Coordonnées, solde total dû et historique complet des factures, en un clic.</p>
+      </div>
+
+      <div class="carte-fonction">
+        <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h7M8.5 9.5h3"/></svg>
+        <h3>Factures</h3>
+        <p>Solde et statut — payée, partielle, en retard — calculés automatiquement, sans erreur possible.</p>
+      </div>
+
+      <div class="carte-fonction">
+        <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="5.5" width="19" height="13" rx="1.6"/><path d="M2.5 9.5h19"/><path d="M6 14.5h4"/></svg>
+        <h3>Paiements</h3>
+        <p>Total ou partiel, plusieurs versements par facture, historique conservé pour chaque client.</p>
+      </div>
+
+      <div class="carte-fonction">
+        <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3a5 5 0 0 0-5 5c0 4-1.5 5.6-2 6.6-.4.8.1 1.9 1.1 1.9h12a1.2 1.2 0 0 0 1.1-1.9c-.5-1-2-2.6-2-6.6a5 5 0 0 0-5-5z"/><path d="M10 19.5a2.2 2.2 0 0 0 4 0"/></svg>
+        <h3>Relances</h3>
+        <p>Liste des factures en retard, triée par ancienneté — impossible d'en oublier une.</p>
+      </div>
+
+      <div class="carte-fonction neuf">
+        <div class="puce-neuf">Nouveau</div>
+        <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="5" width="19" height="14" rx="1.6"/><path d="M2.5 6.5 12 13l9.5-6.5"/></svg>
+        <h3>Courriels automatiques</h3>
+        <p>Un rappel envoyé tout seul dès qu'une facture atteint 7, puis 30 jours de retard — sans y penser.</p>
+      </div>
+
+      <div class="carte-fonction">
+        <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M11 20V4M18 20v-7"/><path d="M2.5 20h19"/></svg>
+        <h3>Tableau de bord</h3>
+        <p>La trésorerie à recevoir, les plus gros retards et les derniers paiements, d'un seul regard.</p>
+      </div>
+
+      <div class="carte-fonction">
+        <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/><path d="M12 12v5.5M9.3 14.8 12 17.5l2.7-2.7"/></svg>
+        <h3>Export PDF</h3>
+        <p>Une facture professionnelle générée en un clic, prête à envoyer au client.</p>
+      </div>
+
+      <div class="carte-fonction">
+        <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="1.6"/><path d="M3 9.5h18M8.5 9.5V20"/></svg>
+        <h3>Export Excel / CSV</h3>
+        <p>Toutes vos données clients, factures et paiements, exploitables dans un tableur externe.</p>
+      </div>
+
+      <div class="carte-fonction">
+        <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="10.5" width="14" height="9.5" rx="1.6"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.4"/></svg>
+        <h3>Comptes et rôles</h3>
+        <p>Chaque utilisateur se connecte avec son propre compte ; seul le responsable peut supprimer des données.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="tarif" class="tarif">
+  <div class="conteneur tarif-grille">
+    <div class="carte-prix">
+      <span class="etiquette">Licence complète</span>
+      <div class="prix">450 000 Ar<span> / installation</span></div>
+      <div class="sous">Paiement unique — l'application vous appartient, aucun abonnement obligatoire.</div>
+      <ul class="liste-inclus">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5 9.5 18 20 6"/></svg> Les 9 modules décrits ci-dessus</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5 9.5 18 20 6"/></svg> Installation sur votre ordinateur</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5 9.5 18 20 6"/></svg> Comptes utilisateurs pour votre équipe</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5 9.5 18 20 6"/></svg> 1 heure de formation à l'utilisation</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12.5 9.5 18 20 6"/></svg> Vos données restent chez vous</li>
+      </ul>
+      <a class="bouton bouton-primaire" style="width:100%;justify-content:center;" href="https://wa.me/261331560950" target="_blank" rel="noopener">Réserver mon installation</a>
+    </div>
+
+    <div class="tarif-notes">
+      <div class="oeil">Pourquoi un prix unique</div>
+      <h2>Pas d'abonnement mensuel à surveiller</h2>
+      <p>Contrairement aux logiciels cloud facturés chaque mois — souvent en devise étrangère — Grand Livre s'installe une fois, chez vous, et vous appartient.</p>
+      <ul>
+        <li>Support par téléphone/WhatsApp pendant la mise en route</li>
+        <li>Aucune dépendance à une connexion internet pour l'utiliser au quotidien</li>
+        <li>Options disponibles : support annuel, formation d'équipe supplémentaire, personnalisation — sur devis</li>
+      </ul>
+      <p style="font-size:.82rem;color:#8FAC9E;">Grand Livre est un outil de suivi des comptes clients ; il ne remplace pas un logiciel de conformité fiscale ou de facturation électronique réglementée.</p>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="conteneur">
+    <div class="section-tete">
+      <div class="oeil">Questions fréquentes</div>
+      <h2>Ce que les gens demandent avant d'acheter</h2>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>Mes données sont-elles en sécurité ?</summary>
+        <p>Oui — l'application s'installe sur votre propre ordinateur, vos données restent chez vous. L'accès est protégé par un identifiant et un mot de passe pour chaque utilisateur.</p>
+      </details>
+      <details>
+        <summary>Ai-je besoin d'internet pour l'utiliser ?</summary>
+        <p>Non, pas au quotidien. Internet n'est utile que pour l'installation initiale et pour l'envoi des courriels de relance automatiques.</p>
+      </details>
+      <details>
+        <summary>Est-ce compliqué à installer ?</summary>
+        <p>Pas pour vous — je m'occupe de l'installation et je vous forme à l'utilisation. Vous n'avez rien à configurer vous-même.</p>
+      </details>
+      <details>
+        <summary>Puis-je essayer avant d'acheter ?</summary>
+        <p>Oui, avec plaisir — écrivez-moi sur WhatsApp pour organiser une courte démonstration.</p>
+      </details>
+      <details>
+        <summary>Que se passe-t-il si j'ai un problème après l'achat ?</summary>
+        <p>Vous pouvez me contacter directement sur WhatsApp. Un support annuel est aussi disponible en option pour les corrections et petites mises à jour.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<div class="cta-finale">
+  <div class="tampon" style="top:-16px;left:50%;transform:translateX(-50%) rotate(-6deg);">Disponible maintenant</div>
+  <h2>Prêt à savoir enfin qui vous doit quoi ?</h2>
+  <p>Écrivez-moi sur WhatsApp pour une démonstration rapide — sans engagement.</p>
+  <a class="bouton bouton-primaire" href="https://wa.me/261331560950" target="_blank" rel="noopener">Écrire sur WhatsApp</a>
+</div>
+
+<footer>
+  <div class="conteneur">
+    <div><strong>Grand Livre</strong> — Gestion des comptes clients</div>
+    <div>Développé par Josoa Jean Mickael · WhatsApp : +261 33 156 09 50</div>
+  </div>
+</footer>
+
+</body>
+</html>
